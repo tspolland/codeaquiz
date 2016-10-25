@@ -1,0 +1,110 @@
+#Udacity Code A Quiz - Python 3
+
+#Easy Questions
+easyQuizPrompt = 'A function is helpful in programming because calling a function can help streamline the code and reduce redundancy. A __1__ statement ends the function. Both functions and loops are tools that can be utilized to streamline code and reduce redundancy which is key in __2__ thinking.  A __3__ is a sequence of characters whereas a __4__ is a sequence of anything. Strings are notated by single or double __5__ whereas lists are notated by __6__.'
+
+#Medium Questions
+mediumQuizPrompt =  'While and __1__ loops allow you to write code that does the same thing over and over. Loops are utilized in iterative and recursive algorithms. In a(n) __2__ algorithm, the process is repeated until a condition fails and the processing is faster and takes less memory unlike the __3__ algorithm in which the function calls itself again and again until the base condition is satisfied. A __4__ loop simply loops until a condition is false and is particularly useful in scenarios where the break condition does not logically depend on any kind of sequence. A __5__ loop is used to iterate over the elements of a sequence and is used when you have a piece of code that you want to repeat n number of times which is distinguished by an explicit loop counter.'
+
+#Hard Questions
+hardQuizPrompt =  'Lists can be accessed or sliced and can contain __1__ and numbers. The method .__2__( ) passes an object into the existing list, causing the list to mutate. You can __3__a list construct to create a list with the same elements n number of times and you can add elements to mutate lists. You can generate random number for lists using the method .__4__( ) in which the parenthesis specify the __5__ of numbers to randomly produce. You can __6__ or combine strings using a plus sign. String.__7__( ) returns words in a string into a list of those words by passing in one argument. The separator argument is optional, and if left blank the delimiter is by __8__. String.__9__ combines the split string into one list.'
+
+#Create a list to contain user input answers for each blank
+easyAnswers = ["return", "procedural", "string", "list", "apostrophes", "brackets"]
+mediumAnswers = ["for", "iterative", "recursive", "while", "for"]
+hardAnswers = ["strings", "append", "multiply", "randint", "range", "concatenate", "split", "space", "join"]
+userAnswers = []
+choices = ["easy","medium", "hard"]
+quizPrompt = ''
+
+
+#Start quiz from the very beginining
+def quizStart():
+	global quizPrompt
+	quizPrompt = ''
+	difficultySelection = input("Please select your preference of difficulty: easy, medium, or hard.")
+	levelDifficulty(difficultySelection)
+	userAnswers = []
+
+#Exit quiz
+def closeQuiz():
+	print ("Thank you for taking Tobi's Quiz. Closing quiz now. Goodbye!")
+
+#If the user wants to take the quiz again, go back to selecting difficulty, if not, close the quiz
+def quizAgain():
+	global userAnswers
+	newQuiz = input("Take another quiz? Please enter yes or no")
+	if newQuiz == "yes":
+		userAnswers = []
+		quizStart()
+	else:
+		closeQuiz()
+	
+#Create a function to indicate level of difficulty in order to display the correct quiz.
+def levelDifficulty(difficultySelection):
+	global quizPrompt
+	if difficultySelection == "easy":
+		print (easyQuizPrompt)
+		quizPrompt += easyQuizPrompt
+		quizInput(easyAnswers)
+	elif difficultySelection == "medium":
+		print (mediumQuizPrompt)
+		quizPrompt += mediumQuizPrompt
+		quizInput(mediumAnswers)
+	elif difficultySelection == "hard":
+		print (hardQuizPrompt) 
+		quizPrompt += hardQuizPrompt
+		quizInput(hardAnswers)
+	elif difficultySelection not in choices:
+		 print ("Answer not recognized. Please enter easy, medium, or hard.")
+		 quizStart()
+
+def checkAnswer(questionNumber,answers,userInput):
+		if userAnswers[questionNumber] == answers[questionNumber]:
+			return True		
+		else:
+			return False
+			
+
+def displayParagraph(answers, questionNumber):
+	paragraphReturn = quizPrompt
+	for i in range(0,questionNumber+1):
+		paragraphReturn = paragraphReturn.replace("__"+str(i+1)+"__", answers[i])
+	return paragraphReturn
+	
+	
+def quizInput(answers):
+	questionNumber = 0
+	for questionNumber in range(0, len(answers)):
+		Correct = False
+		tries = 0
+		while tries < 3 and Correct == False:
+			userInput = input("What is the answer for blank " + str(questionNumber+1) + "?")
+			userAnswers.append(str(userInput))
+			if checkAnswer(questionNumber,answers,userAnswers):
+				print(displayParagraph(answers, questionNumber))
+				print ("Correct!")
+				questionNumber = questionNumber + 1
+				Correct = True
+			else:
+				tries = tries + 1
+				print ("Your answer is incorrect. Please try again. You have " + str(3 - tries) + " tries left")
+				print(str(answers[questionNumber]) + ": " + str(userAnswers[questionNumber]))
+				userAnswers.pop()
+			if tries >= 3:
+				valid = False 
+				while valid == False:
+					userInput = input("No more tries left. Would you like to restart? Enter yes or no.")
+					if userInput == "yes":
+						valid = True
+						return quizAgain()
+					elif userInput == "no":
+						valid = True
+						return closeQuiz()
+					else:
+						print ("invalid input, please enter yes or no")
+	questionNumber+=1
+		
+#Directions to user to select level of difficulty
+print ("Welcome to Tobi's Quiz! The quiz will ask you to fill in blanks and the quiz will range in difficulty.")
+quizStart()
